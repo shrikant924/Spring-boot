@@ -1,7 +1,7 @@
-package com.quiz_app.quiz_app.controller.service;
+package com.quiz_app.quiz_app.service;
 
-import com.quiz_app.quiz_app.controller.repo.StudentRepo;
-import com.quiz_app.quiz_app.controller.repo.UserRepo;
+import com.quiz_app.quiz_app.repo.StudentRepo;
+import com.quiz_app.quiz_app.repo.UserRepo;
 import com.quiz_app.quiz_app.model.Student;
 import com.quiz_app.quiz_app.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class StudentService {

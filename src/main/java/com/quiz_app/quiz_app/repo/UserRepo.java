@@ -1,4 +1,4 @@
-package com.quiz_app.quiz_app.controller.repo;
+package com.quiz_app.quiz_app.repo;
 
 import com.quiz_app.quiz_app.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;

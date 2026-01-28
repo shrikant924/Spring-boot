@@ -18,12 +18,12 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = false)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
     @Transient
-    private String confirmPassword; // ❌ not stored in DB
+    private String confirmPassword;
 }

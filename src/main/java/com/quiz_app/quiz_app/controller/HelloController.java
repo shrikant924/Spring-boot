@@ -1,6 +1,6 @@
 package com.quiz_app.quiz_app.controller;
 
-import com.quiz_app.quiz_app.controller.service.StudentService;
+import com.quiz_app.quiz_app.service.StudentService;
 import com.quiz_app.quiz_app.model.Student;
 import com.quiz_app.quiz_app.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +43,16 @@ public class HelloController {
         return  studentService.save(student);
     }
 
-    @PutMapping("register")
+    @PostMapping("register")
     public ResponseEntity<String> registerUser(@RequestBody User user){
         return studentService.saveUser(user);
     }
+
+    @PutMapping("update")
+    public ResponseEntity<String> updateUser(@RequestBody User user){
+        return studentService.saveUser(user);
+    }
+
 
     @PostMapping("login")
     public ResponseEntity<String> doLogin(@RequestBody User user){
