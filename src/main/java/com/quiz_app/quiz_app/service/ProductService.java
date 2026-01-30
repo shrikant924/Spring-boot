@@ -23,4 +23,15 @@ public class ProductService {
         List<Products> products = productRepo.findAll();
         return new ResponseEntity<>(products, HttpStatus.ACCEPTED);
     }
+
+    public ResponseEntity<String> addProduct(Products product) {
+        Products savedProduct = productRepo.save(product);
+
+        if (savedProduct.getId() != null) {
+            return ResponseEntity.ok("Product added successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to add product");
+        }
+    }
 }

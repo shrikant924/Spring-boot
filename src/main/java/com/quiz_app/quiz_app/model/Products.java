@@ -1,26 +1,31 @@
 package com.quiz_app.quiz_app.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
 public class Products {
-    @Id
-    int id;
 
-    String name;
-    String brand;
-    long price;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String brand;
+
+    private Long price;
+
     @Column(name = "original_price")
-    long originalPrice;
-    int discount;
-    double rating;
-    int reviews;
-    String category;
-    int stock;
-    String image;
-    String description;
+    private Long originalPrice;
+
+    private Integer discount;
+    private Double rating;
+    private Integer reviews;
+    private String category;
+    private Integer stock;
+    private String image;
+
+    @Column(length = 1000)
+    private String description;
 }
