@@ -9,10 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -52,7 +54,7 @@ public class ProductService {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(product.getImageData());
     }
 
-    public ResponseEntity<Integer> addProductToCart(long id, int qty) {
+    public Object addProductToCart(long id, int qty) {
         Products product = productRepo.getProductsById(id).get(0);
         int productBalanceStock = product.getStock();
         Cart cart = null;
@@ -65,8 +67,51 @@ public class ProductService {
             product.setStock(productBalanceStock-qty);
             productRepo.save(product);
             return new ResponseEntity<>(product.getStock(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Product is out of stock", HttpStatus.OK);
+        }
+    }
+
+    public ResponseEntity<String> updateProductDetails(int id , Products products ,  MultipartFile imageFile) throws IOException {
+        Optional<Products> product = productRepo.findById(String.valueOf(id));
+        if(product.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
         }
 
-        return new ResponseEntity<>(cart.getProductQty(), HttpStatus.OK);
+        Products existingProduct = product.get();
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            existingProduct.setImageName(imageFile.getOriginalFilename());
+            existingProduct.setImageType(imageFile.getContentType());
+            existingProduct.setImageData(imageFile.getBytes());
+            Products savedProduct = productRepo.save(existingProduct);
+        }
+
+        existingProduct.setName(products.getName());
+        existingProduct.setCategory(products.getCategory());
+        existingProduct.setDescription(products.getDescription());
+        existingProduct.setDiscount(products.getDiscount());
+        existingProduct.setBrand(products.getBrand());
+        existingProduct.setPrice(products.getPrice());
+        existingProduct.setOriginalPrice(products.getOriginalPrice());
+        existingProduct.setReviews(products.getReviews());
+        existingProduct.setStock(products.getStock());
+        existingProduct.setRating(products.getRating());
+        productRepo.save(existingProduct);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Product Updated Successfully");
+    }
+
+    public Object getProductById(int id) {
+        Optional<Products> product = productRepo.findById(String.valueOf(id));
+        if(product.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product Not found");
+        }
+
+        return new ResponseEntity<>(product , HttpStatus.OK) ;   }
+
+    public ResponseEntity<String> deleteProductById(int id) {
+        productRepo.deleteById(String.valueOf(id));
+        return ResponseEntity.ok("Product Delected from DB");
     }
 }
