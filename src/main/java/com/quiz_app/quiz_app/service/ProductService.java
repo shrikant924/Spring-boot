@@ -5,6 +5,8 @@ import com.quiz_app.quiz_app.model.Products;
 import com.quiz_app.quiz_app.repo.CartRepo;
 import com.quiz_app.quiz_app.repo.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +32,8 @@ public class ProductService {
     private CartRepo cartRepo;
 
 
-    public ResponseEntity<List<Products>> loadAllProducts() {
-        List<Products> products = productRepo.findAll();
-        return new ResponseEntity<>(products, HttpStatus.ACCEPTED);
+    public Page<Products> loadAllProducts(Pageable pageable) {
+        return productRepo.findAll(pageable);
     }
 
     public ResponseEntity<String> addProduct(Products product, MultipartFile imageFile) throws IOException {
@@ -84,7 +86,7 @@ public class ProductService {
             existingProduct.setImageName(imageFile.getOriginalFilename());
             existingProduct.setImageType(imageFile.getContentType());
             existingProduct.setImageData(imageFile.getBytes());
-            Products savedProduct = productRepo.save(existingProduct);
+            productRepo.save(existingProduct);
         }
 
         existingProduct.setName(products.getName());

@@ -73,14 +73,14 @@ public class HelloController {
 
 
     @PostMapping("login")
-    public ResponseEntity<Map<String,String>> doLogin(@RequestBody User user) {
+    public ResponseEntity<Map<String, String>> doLogin(@RequestBody User user) {
 
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         String token = jwtService.generateToken(user.getUsername());
 
-        Map <String, String> res = new HashMap<>();
-        res.put("token" , token);
+        Map<String, String> res = new HashMap<>();
+        res.put("token", token);
         return ResponseEntity.ok(res);
     }
 

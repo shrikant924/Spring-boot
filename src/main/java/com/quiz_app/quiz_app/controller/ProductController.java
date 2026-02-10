@@ -1,12 +1,15 @@
 package com.quiz_app.quiz_app.controller;
 
 import com.quiz_app.quiz_app.model.Products;
+import com.quiz_app.quiz_app.model.dto.PaginationResponse;
 import com.quiz_app.quiz_app.service.ProductService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.List;
 
@@ -22,8 +25,9 @@ public class ProductController {
     }
 
     @GetMapping("/getProducts")
-    public ResponseEntity<List<Products>> getProducts(){
-        return productService.loadAllProducts();
+    public PaginationResponse<Products> getProducts(Pageable pageable) {
+        Page<Products> page = productService.loadAllProducts(pageable);
+        return new PaginationResponse<>(page);
     }
 
     @GetMapping("/get/{id}")
@@ -48,7 +52,7 @@ public class ProductController {
 
     @PutMapping(value = "/updateProduct/{id}" ,  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updateProductDetails(@PathVariable int id , @RequestPart Products product ,
-                                                       @RequestPart(value = "image", required = false) MultipartFile imageFile) throws IOException {
+                                                       @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
         return productService.updateProductDetails(id , product ,imageFile);
     }
 
