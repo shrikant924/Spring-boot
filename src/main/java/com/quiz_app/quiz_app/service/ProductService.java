@@ -4,33 +4,27 @@ import com.quiz_app.quiz_app.model.Cart;
 import com.quiz_app.quiz_app.model.Products;
 import com.quiz_app.quiz_app.repo.CartRepo;
 import com.quiz_app.quiz_app.repo.ProductRepo;
+import java.io.IOException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
-
-import org.springframework.data.domain.Pageable;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
 
     private final ProductRepo productRepo;
+    @Autowired
+    private CartRepo cartRepo;
 
     public ProductService(ProductRepo productRepo) {
         this.productRepo = productRepo;
     }
-
-    @Autowired
-    private CartRepo cartRepo;
-
 
     public Page<Products> loadAllProducts(Pageable pageable) {
         return productRepo.findAll(pageable);

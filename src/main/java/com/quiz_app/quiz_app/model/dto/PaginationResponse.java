@@ -6,67 +6,67 @@ import java.util.List;
 
 public class PaginationResponse<T> {
 
-    private List<T> content;
-    private int page;
-    private int size;
-    private long totalElements;
-    private int totalPages;
-    private boolean last;
+  private List<T> content;
+  private int page;
+  private int size;
+  private long totalElements;
+  private int totalPages;
+  private boolean last;
 
-    public PaginationResponse(Page<T> pageData) {
-        this.content = pageData.getContent();
-        this.page = pageData.getNumber();
-        this.size = pageData.getSize();
-        this.totalElements = pageData.getTotalElements();
-        this.totalPages = pageData.getTotalPages();
-        this.last = pageData.isLast();
-    }
+  public PaginationResponse(Page<T> pageData) {
+    this.content = pageData.getContent();
+    this.page = pageData.getNumber();
+    this.size = pageData.getSize();
+    this.totalElements = pageData.getTotalElements();
+    this.totalPages = pageData.getTotalPages();
+    this.last = pageData.isLast();
+  }
 
-    public List<T> getContent() {
-        return content;
-    }
+  public List<T> getContent() {
+    return content;
+  }
 
-    public void setContent(List<T> content) {
-        this.content = content;
-    }
+  public void setContent(List<T> content) {
+    this.content = content;
+  }
 
-    public int getPage() {
-        return page;
-    }
+  public int getPage() {
+    return page;
+  }
 
-    public void setPage(int page) {
-        this.page = page;
-    }
+  public void setPage(int page) {
+    this.page = page;
+  }
 
-    public int getSize() {
-        return size;
-    }
+  public int getSize() {
+    return size;
+  }
 
-    public void setSize(int size) {
-        this.size = size;
-    }
+  public void setSize(int size) {
+    this.size = size;
+  }
 
-    public long getTotalElements() {
-        return totalElements;
-    }
+  public long getTotalElements() {
+    return totalElements;
+  }
 
-    public void setTotalElements(long totalElements) {
-        this.totalElements = totalElements;
-    }
+  public void setTotalElements(long totalElements) {
+    this.totalElements = totalElements;
+  }
 
-    public int getTotalPages() {
-        return totalPages;
-    }
+  public int getTotalPages() {
+    return totalPages;
+  }
 
-    public void setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
-    }
+  public void setTotalPages(int totalPages) {
+    this.totalPages = totalPages;
+  }
 
-    public boolean isLast() {
-        return last;
-    }
+  public boolean isLast() {
+    return last;
+  }
 
-    public void setLast(boolean last) {
-        this.last = last;
-    }
+  public void setLast(boolean last) {
+    this.last = last;
+  }
 }

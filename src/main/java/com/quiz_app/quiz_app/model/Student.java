@@ -8,10 +8,10 @@ import lombok.Data;
 @Entity
 public class Student {
 
-    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int rollNo;
-    private String name;
-    private int marks;
+  @Id
+  //    @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int rollNo;
 
+  private String name;
+  private int marks;
 }

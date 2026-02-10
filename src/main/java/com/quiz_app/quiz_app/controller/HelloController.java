@@ -1,91 +1,81 @@
 package com.quiz_app.quiz_app.controller;
 
+import com.quiz_app.quiz_app.model.Student;
+import com.quiz_app.quiz_app.model.User;
 import com.quiz_app.quiz_app.model.dto.UserDto;
 import com.quiz_app.quiz_app.service.JwtService;
 import com.quiz_app.quiz_app.service.StudentService;
-import com.quiz_app.quiz_app.model.Student;
-import com.quiz_app.quiz_app.model.User;
 import com.quiz_app.quiz_app.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
 @RequestMapping("api")
 public class HelloController {
 
-    @Autowired
-    private StudentService studentService;
+  @Autowired AuthenticationManager authenticationManager;
+  @Autowired private StudentService studentService;
+  @Autowired private UserService userService;
+  @Autowired private JwtService jwtService;
 
-    @Autowired
-    private UserService userService;
+  @GetMapping("hello")
+  public String greet() {
+    return "Hello world";
+  }
 
-    @Autowired
-    private JwtService jwtService;
+  @GetMapping("/getStudents")
+  public ResponseEntity<List<Student>> getAllStudents() {
+    return studentService.findAll();
+  }
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+  @GetMapping("/getStudent/{Id}")
+  public Student getStudent(@PathVariable("Id") int id) {
+    return studentService.findById(id).getBody();
+  }
 
-    @GetMapping("hello")
-    public String greet() {
-        return "Hello world";
-    }
+  @GetMapping("/getStudentByName/{name}")
+  public ResponseEntity<Student> findStudentByName(@PathVariable("name") String name) {
+    return studentService.findByName(name);
+  }
 
-    @GetMapping("/getStudents")
-    public ResponseEntity<List<Student>> getAllStudents() {
-        return studentService.findAll();
-    }
+  @PostMapping("/save")
+  public ResponseEntity<String> saveStudent(@RequestBody Student student) {
+    return studentService.save(student);
+  }
 
-    @GetMapping("/getStudent/{Id}")
-    public Student getStudent(@PathVariable("Id") int id) {
-        return studentService.findById(id).getBody();
-    }
+  @PostMapping("register")
+  public UserDto registerUser(@RequestBody User user) {
+    return userService.saveUser(user);
+  }
 
-    @GetMapping("/getStudentByName/{name}")
-    public ResponseEntity<Student> findStudentByName(@PathVariable("name") String name) {
-        return studentService.findByName(name);
-    }
+  @PutMapping("update")
+  public ResponseEntity<String> updateUser(@RequestBody User user) {
+    return studentService.saveUser(user);
+  }
 
-    @PostMapping("/save")
-    public ResponseEntity<String> saveStudent(@RequestBody Student student) {
-        return studentService.save(student);
-    }
+  @PostMapping("login")
+  public ResponseEntity<Map<String, String>> doLogin(@RequestBody User user) {
 
-    @PostMapping("register")
-    public UserDto registerUser(@RequestBody User user) {
-        return userService.saveUser(user);
-    }
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+    String token = jwtService.generateToken(user.getUsername());
 
-    @PutMapping("update")
-    public ResponseEntity<String> updateUser(@RequestBody User user) {
-        return studentService.saveUser(user);
-    }
+    Map<String, String> res = new HashMap<>();
+    res.put("token", token);
+    return ResponseEntity.ok(res);
+  }
 
-
-    @PostMapping("login")
-    public ResponseEntity<Map<String, String>> doLogin(@RequestBody User user) {
-
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        String token = jwtService.generateToken(user.getUsername());
-
-        Map<String, String> res = new HashMap<>();
-        res.put("token", token);
-        return ResponseEntity.ok(res);
-    }
-
-    @GetMapping("get/{id}")
-    public ResponseEntity<User> getUserDetails(@PathVariable int id) {
-        return studentService.findUserById(id);
-    }
+  @GetMapping("get/{id}")
+  public ResponseEntity<User> getUserDetails(@PathVariable int id) {
+    return studentService.findUserById(id);
+  }
 }
