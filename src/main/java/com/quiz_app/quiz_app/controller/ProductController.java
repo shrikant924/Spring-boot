@@ -1,9 +1,14 @@
 package com.quiz_app.quiz_app.controller;
 
+import com.quiz_app.quiz_app.model.Cart;
 import com.quiz_app.quiz_app.model.Products;
 import com.quiz_app.quiz_app.model.dto.PaginationResponse;
+import com.quiz_app.quiz_app.repo.ProductRepo;
 import com.quiz_app.quiz_app.service.ProductService;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -19,15 +25,21 @@ import java.util.List;
 public class ProductController {
 
   private final ProductService productService;
+  private final ProductRepo productRepo;
 
-  public ProductController(ProductService productService) {
+  public ProductController(ProductService productService, ProductRepo productRepo) {
     this.productService = productService;
+      this.productRepo = productRepo;
   }
 
   @GetMapping("/getProducts")
-  public PaginationResponse<Products> getProducts(Pageable pageable) {
-    Page<Products> page = productService.loadAllProducts(pageable);
-    return new PaginationResponse<>(page);
+  public Page<Products> getProducts(@RequestParam int page , @RequestParam int size) {
+      Pageable pageable = PageRequest.of(
+              page,
+              size,
+              Sort.by("id").descending()
+      );
+    return productService.loadAllProducts(pageable);
   }
 
   @GetMapping("/get/{id}")
@@ -46,9 +58,9 @@ public class ProductController {
     return productService.getProductImageById(id);
   }
 
-  @PostMapping("/addToCart/{id}/{qty}")
-  public Object addProductToCart(@PathVariable int id, @PathVariable int qty) {
-    return productService.addProductToCart(id, qty);
+  @PostMapping("/addToCart")
+  public Object addProductToCart(@RequestBody Cart cart) {
+    return productService.addProductToCart(cart.getUserId(), cart.getProductId(), cart.getProductQty());
   }
 
   @PutMapping(value = "/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -61,7 +73,8 @@ public class ProductController {
   }
 
   @DeleteMapping("/delete/{id}")
-  public ResponseEntity<String> deleteProduct(@PathVariable int id) {
+  public ResponseEntity<String> deleteProduct(@PathVariable long id) {
     return productService.deleteProductById(id);
   }
+
 }

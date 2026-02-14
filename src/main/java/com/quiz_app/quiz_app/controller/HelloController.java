@@ -28,7 +28,7 @@ public class HelloController {
 
   @GetMapping("hello")
   public String greet() {
-    return "Hello world";
+    return "Hello world1234";
   }
 
   @GetMapping("/getStudents")
@@ -70,7 +70,9 @@ public class HelloController {
     String token = jwtService.generateToken(user.getUsername());
 
     Map<String, String> res = new HashMap<>();
+    Long userId = userService.getUserId(user.getUsername());
     res.put("token", token);
+    res.put("id", String.valueOf(userId));
     return ResponseEntity.ok(res);
   }
 

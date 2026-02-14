@@ -20,4 +20,9 @@ public class UserService {
     userDto.setPassword(user.getPassword());
     return userDto;
   }
+
+  public Long getUserId(String username) {
+    User userDetails = userRepo.findByUsername(username);
+    return userDetails.getId();
+  }
 }

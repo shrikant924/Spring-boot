@@ -50,13 +50,14 @@ public class ProductService {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(product.getImageData());
     }
 
-    public Object addProductToCart(long id, int qty) {
-        Products product = productRepo.getProductsById(id).get(0);
+    public Object addProductToCart(long userId, long productId, int qty) {
+        Products product = productRepo.getProductsById(productId).get(0);
         int productBalanceStock = product.getStock();
         Cart cart = null;
         if (productBalanceStock >= qty) {
             cart = new Cart();
-            cart.setId(product.getId());
+            cart.setUserId(userId);
+            cart.setProductId(productId);
             cart.setProductQty(qty);
             cartRepo.save(cart);
 
@@ -68,8 +69,8 @@ public class ProductService {
         }
     }
 
-    public ResponseEntity<String> updateProductDetails(int id , Products products ,  MultipartFile imageFile) throws IOException {
-        Optional<Products> product = productRepo.findById(String.valueOf(id));
+    public ResponseEntity<String> updateProductDetails(long id , Products products ,  MultipartFile imageFile) throws IOException {
+        Optional<Products> product = productRepo.findById(id);
         if(product.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
         }
@@ -98,16 +99,16 @@ public class ProductService {
         return ResponseEntity.status(HttpStatus.CREATED).body("Product Updated Successfully");
     }
 
-    public Object getProductById(int id) {
-        Optional<Products> product = productRepo.findById(String.valueOf(id));
+    public Object getProductById(long id) {
+        Optional<Products> product = productRepo.findById(id);
         if(product.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product Not found");
         }
 
         return new ResponseEntity<>(product , HttpStatus.OK) ;   }
 
-    public ResponseEntity<String> deleteProductById(int id) {
-        productRepo.deleteById(String.valueOf(id));
+    public ResponseEntity<String> deleteProductById(long id) {
+        productRepo.deleteById(id);
         return ResponseEntity.ok("Product Delected from DB");
     }
 }
